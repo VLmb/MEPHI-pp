@@ -55,29 +55,31 @@ def check_skills_matches(skills_list):
         skills = course.Skills.replace('Навыки: ', '', 1).split(', ')
         #print(skills)
         matches = sum(1 for skill in skills if skill in skills_list)
-        results[course.Name] = matches
+        results[course.ID] = matches
 
     session.close()
     return results
 
 # Запускаем
-if __name__ == "__main__":
+def data(skills_list, n):
 
     # Парсим таблицу Excel в базу данных
     parse_excel_to_db()
 
     # Список строк для проверки совпадений
-    skills_list = ['Golang', 'Machine Learning', 'Coding', "Programming"]
+    #skills_list = ['Golang', 'Machine Learning', 'Coding', "Programming"]
 
     # Проверяем совпадения
     results = check_skills_matches(skills_list)
 
     #Имена курсов в список в порядке убывания кол-ва совпадений
-    ans = [key for key, value in sorted(results.items(), key=lambda item: item[1], reverse=True)]
+    ans = [key for key, value in sorted(results.items(), key=lambda item: item[1], reverse=True)][:n]
 
     #Передаем данные другому модулю
     print(results)
     print(ans)
+
+    return ans
 
 
 
