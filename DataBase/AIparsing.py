@@ -33,37 +33,35 @@ def ai_parsing(description):
         print(f"Exception: {e}")
         return "Error"
 
-file_path = 'Descriptions.xlsx'
-df = pd.read_excel(file_path)
+def write_to_excel():
+    file_path = 'Descriptions.xlsx'
+    df = pd.read_excel(file_path)
 
-if 'Name' not in df.columns:
-    df['Name'] = df['Name'].astype(object)
-if 'Length' not in df.columns:
-    df['Length'] = df['Length'].astype(object)
-if 'Skills' not in df.columns:
-    df['Skills'] = df['Skills'].astype(object)
+    if 'Name' not in df.columns:
+        df['Name'] = df['Name'].astype(object)
+    if 'Duration' not in df.columns:
+        df['Duration'] = df['Duration'].astype(object)
+    if 'Skills' not in df.columns:
+        df['Skills'] = df['Skills'].astype(object)
 
-for index, row in df.iterrows():
-    # Проверяем, заполнены ли колонки 'Name', 'Length', и 'Skills'
-    if pd.notna(row['Name']) and pd.notna(row['Length']) and pd.notna(row['Skills']):
-        continue
+    for index, row in df.iterrows():
+        # Проверяем, заполнены ли колонки 'Name', 'Duration', и 'Skills'
+        if pd.notna(row['Name']) and pd.notna(row['Duration']) and pd.notna(row['Skills']):
+            continue
 
-    answer = ai_parsing(row['Description']).replace('Название: ', '').replace('Длительность: ', '').replace('Навыки: ', '').split('\n')
-    if len(answer) >= 3:
-        df.at[index, 'Name'] = answer[1]
-        df.at[index, 'Length'] = answer[2]
-        df.at[index, 'Skills'] = answer[0]
-    else:
-        print(f"Warning: Not enough data for row {index}")
+        answer = ai_parsing(row['Description']).replace('Название: ', '').replace('Длительность: ', '').replace('Навыки: ', '').split('\n')
+        if len(answer) >= 3:
+            df.at[index, 'Name'] = answer[1]
+            df.at[index, 'Duration'] = answer[2]
+            df.at[index, 'Skills'] = answer[0]
+        else:
+            print(f"Warning: Not enough data for row {index}")
 
-# Сохраняем обновленный DataFrame обратно в Excel
-output_file_path = 'Descriptions.xlsx'
-df.to_excel(output_file_path, index=False)
+    # Сохраняем обновленный DataFrame обратно в Excel
+    output_file_path = 'Descriptions.xlsx'
+    df.to_excel(output_file_path, index=False)
 
-
-
-
-# Сохраняем обновленный DataFrame обратно в Excel
-output_file_path = '../Courses.xlsx'
-df.to_excel(output_file_path, index=False)
+    # Сохраняем обновленный DataFrame обратно в Excel
+    output_file_path = '../Courses.xlsx'
+    df.to_excel(output_file_path, index=False)
 

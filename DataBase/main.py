@@ -16,6 +16,8 @@ class Course(Base):
     ID = Column(Integer, primary_key=True)
     Name = Column(String)
     Description = Column(String)
+    Link = Column(String)
+    Duration  = Column(String)
     Skills = Column(String)
 
 # Создаем таблицу в базе данных
@@ -35,6 +37,8 @@ def parse_excel_to_db():
                 ID=row['ID'],
                 Name=row['Name'],
                 Description=row['Description'],
+                Link=row['Link'],
+                Duration=row['Duration'],
                 Skills=row['Skills'],
             )
             session.add(course)
@@ -73,13 +77,27 @@ def data(skills_list, n):
     results = check_skills_matches(skills_list)
 
     #Имена курсов в список в порядке убывания кол-ва совпадений
-    ans = [key for key, value in sorted(results.items(), key=lambda item: item[1], reverse=True)][:n]
+    id_list = [key for key, value in sorted(results.items(), key=lambda item: item[1], reverse=True)][:n]
 
     #Передаем данные другому модулю
-    print(results)
-    print(ans)
+    return send_to_bot(id_list, n)
 
-    return ans
+def send_to_bot(id_list):
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    toTeleBot = []
+    for course_id in id_list:
+        course = session.query(Course).filter(Course.ID == course_id).first()
+        d = dict()
+        d['name'] = course.Name.replace('\n', '')
+        d['description'] = course.Description.replace('\n', '')
+        d['link'] = course.Link.replace('\n', '')
+        d['duration'] = course.Duration.replace('\n', '')
+        toTeleBot.append(d)
+    session.close()
+    return toTeleBot
 
+slist = "Go, Programming Basics, Problem Solving, Code Writing, Go Syntax, Basic Programming Concepts, Code Reading, Problem Solving".split(', ')
+print(data(slist, 2))
 
 
