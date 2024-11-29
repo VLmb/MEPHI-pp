@@ -3,28 +3,26 @@ import sqlite3
 from telebot import types
 from telebot.apihelper import send_message
 
-from module import func
+# from module import func
 
 
 
 bot = telebot.TeleBot('7691297714:AAG6Z9I7WXtbnqvGOGI1h3Qzfgh_d_70fnk')
 name = ''
 
-state = {}
-
-state = {
-    123434324: {
-        'language': 'Python',
-        'level': 'Senior',
-
-        ''
-    }
-
-}
-state[user_id] = {}
-state[user_id]['language'] = chosen_language
-state[user_id]['level'] = chosen_level
-state[user_id]['language'] =
+# state = {}
+#
+# state = {
+#     123434324: {
+#         'language': 'Python',
+#         'level': 'Senior',
+#         'suggestions': '...'
+#     }
+# }
+# state[user_id] = {}
+# state[user_id]['language'] = chosen_language
+# state[user_id]['level'] = chosen_level
+# state[user_id]['language'] =
 
 
 
