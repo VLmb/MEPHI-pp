@@ -1,7 +1,12 @@
 from gradio_client import Client
 import pandas as pd
 
-def ai_parsing(description):
+def ai_parsing(description: str) -> str:
+    '''
+    Отправляет запрос нейросети
+    :param description: описание курса
+    :return:
+    '''
     client = Client("Qwen/Qwen2.5")
 
     system_prompt = '''Ты ассистент, который помогает развиваться IT сотрудникам.
@@ -34,6 +39,10 @@ def ai_parsing(description):
         return "Error"
 
 def write_to_excel():
+    '''
+    записывает полученный от нейросети ответ в таблицу Excel
+    :return: nothing
+    '''
     file_path = 'Descriptions.xlsx'
     df = pd.read_excel(file_path)
 

@@ -2,6 +2,7 @@ import pandas as pd
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import declarative_base, sessionmaker
 
+
 #Общие данные
 dataBaseName = 'Courses'
 file_path = '../Courses.xlsx'
@@ -23,8 +24,12 @@ class Course(Base):
 # Создаем таблицу в базе данных
 Base.metadata.create_all(engine)
 
-# Функция для парсинга таблицы Excel в базу данных
+
 def parse_excel_to_db():
+    '''
+    Ничего не принимает и не возвращает, задача функции - занести все поля с
+    таблицы в Excel, расположенной по адресу "file_path", в базу данных
+    '''
     df = pd.read_excel(file_path)
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -47,7 +52,13 @@ def parse_excel_to_db():
     session.close()
 
 # Функция для проверки совпадений слов в поле Skills
-def check_skills_matches(skills_list):
+def skill_match(skills_list: str) -> dict[Column[int], int]:
+    '''
+    Ищет кол-во совпадений требуемых навыков с навыками каждого курса
+    :param skills_list: строка с требуемыми навыками, формат: "Навыки: skill1, skill2, ..."
+    :return: словарь, в к-ом ключом выступает id курса, а значением - кол-во совпадений
+            навыков, которые развивает курс с требуемыми навыками.
+    '''
     Session = sessionmaker(bind=engine)
     session = Session()
 
@@ -57,7 +68,6 @@ def check_skills_matches(skills_list):
 
     for course in courses:
         skills = course.Skills.replace('Навыки: ', '', 1).split(', ')
-        #print(skills)
         matches = sum(1 for skill in skills if skill in skills_list)
         results[course.ID] = matches
 
@@ -65,8 +75,13 @@ def check_skills_matches(skills_list):
     return results
 
 # Запускаем
-def data(skills_list, n):
-
+def main_data(skills_list: str, n: int) ->  list[dict[str, str]]:
+    '''
+    Основная функция, которая запускает работу базы данных
+    :param skills_list: строка с требуемыми навыками, формат: "Навыки: skill1, skill2, ..."
+    :param n: кол-во курсов, необходимых для отправки пользователю
+    :return: массив словарей полученный в функции "formatting"
+    '''
     # Парсим таблицу Excel в базу данных
     parse_excel_to_db()
 
@@ -74,15 +89,22 @@ def data(skills_list, n):
     #skills_list = ['Golang', 'Machine Learning', 'Coding', "Programming"]
 
     # Проверяем совпадения
-    results = check_skills_matches(skills_list)
+    results = skill_match(skills_list)
 
     #Имена курсов в список в порядке убывания кол-ва совпадений
     id_list = [key for key, value in sorted(results.items(), key=lambda item: item[1], reverse=True)][:n]
 
-    #Передаем данные другому модулю
-    return send_to_bot(id_list, n)
+    toTeleBot = formatting(id_list)
 
-def send_to_bot(id_list):
+    #Передаем данные другому модулю
+    return toTeleBot
+
+def formatting(id_list: list) -> list[dict[str, str]]:
+    '''
+    Формирует массив словарей для передачи данных из бд другому модулю
+    :param id_list: массив с id самых релевантных курсов в порядке убывания релевантности
+    :return: массив словарей
+    '''
     Session = sessionmaker(bind=engine)
     session = Session()
     toTeleBot = []
@@ -97,7 +119,8 @@ def send_to_bot(id_list):
     session.close()
     return toTeleBot
 
+#Для теста
 slist = "Go, Programming Basics, Problem Solving, Code Writing, Go Syntax, Basic Programming Concepts, Code Reading, Problem Solving".split(', ')
-print(data(slist, 2))
+print(data(slist, 3))
 
 
