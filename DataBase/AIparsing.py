@@ -10,15 +10,20 @@ def ai_parsing(description: str) -> str:
     client = Client("Qwen/Qwen2.5")
 
     system_prompt = '''Ты ассистент, который помогает развиваться IT сотрудникам.
-    Выдели ключевые навыки, которые позволяет развивать курс исходя из его описания, также сформируй оптимальное название курса.
-    Определи среднюю длительность прохождения данного курса в часах. Все, кроме навыков, сделай на русском.
+    Тебе дают описание IT курса из интернета, ты должен проанализировать его и сделать следующее:
+    1. сформировать оптимальное название для этого курса
+    2. выделить ключевые навыки, которые развивает данный курс(не больше пяти)
+    3. определить примерную длительность прохождения курса в часах
+    4. переписать его описание так, чтобы оно было максимально информативным и вмещалось в 5-10 предложений
+    Все, кроме навыков, сделай на русском.
     Дай ответ в формате: 
-    'Навыки:
-     Название:
-     Длительность:'
-    Каждый навык пиши с большой буквы и на английском разделяй их запятыми.
+    'Название:
+     Навыки:
+     Длительность:
+     Описание:'
+    Каждый навык пиши с большой буквы и на английском, разделяй их запятыми.
     '''
-    user_prompt = f"Пиши кратко, без использования списков. Напиши навыки, которые развивает данный IT курс исходя из его описания, а также оптимальное название и длительность его выполнения: {description}"
+    user_prompt = f"Пиши кратко, без использования списков. Напиши навыки, которые развивает данный IT курс исходя из его описания, а также оптимальное название, длительность его выполнения и перепиши описание, чтобы оно было информативным и кратким: {description}"
 
     try:
         result = client.predict(
@@ -57,20 +62,22 @@ def write_to_excel():
         # Проверяем, заполнены ли колонки 'Name', 'Duration', и 'Skills'
         if pd.notna(row['Name']) and pd.notna(row['Duration']) and pd.notna(row['Skills']):
             continue
-
-        answer = ai_parsing(row['Description']).replace('Название: ', '').replace('Длительность: ', '').replace('Навыки: ', '').split('\n')
-        if len(answer) >= 3:
-            df.at[index, 'Name'] = answer[1]
+        answer = ai_parsing(row['Description']).replace('Название: ', '').replace('Навыки: ', '').replace('Длительность: ', '').replace('Описание: ', '').split('\n')
+        i = 0
+        while i < len(answer):
+            if answer[i] == '':
+                answer.pop(i)
+            i+=1
+        if len(answer) >= 4:
+            df.at[index, 'Name'] = answer[0]
+            df.at[index, 'Skills'] = answer[1]
             df.at[index, 'Duration'] = answer[2]
-            df.at[index, 'Skills'] = answer[0]
+            df.at[index, 'Description'] = answer[3]
         else:
             print(f"Warning: Not enough data for row {index}")
 
     # Сохраняем обновленный DataFrame обратно в Excel
-    output_file_path = 'Descriptions.xlsx'
+    output_file_path = 'Courses.xlsx'
     df.to_excel(output_file_path, index=False)
 
-    # Сохраняем обновленный DataFrame обратно в Excel
-    output_file_path = '../Courses.xlsx'
-    df.to_excel(output_file_path, index=False)
-
+write_to_excel()

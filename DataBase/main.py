@@ -19,6 +19,7 @@ class Course(Base):
     Description = Column(String)
     Link = Column(String)
     Duration  = Column(String)
+    Cost = Column(String)
     Skills = Column(String)
 
 # Создаем таблицу в базе данных
@@ -42,6 +43,7 @@ def parse_excel_to_db():
                 ID=row['ID'],
                 Name=row['Name'],
                 Description=row['Description'],
+                Cost=row['Cost'],
                 Link=row['Link'],
                 Duration=row['Duration'],
                 Skills=row['Skills'],
@@ -115,6 +117,7 @@ def formatting(id_list: list) -> list[dict[str, str]]:
         d['description'] = course.Description.replace('\n', '')
         d['link'] = course.Link.replace('\n', '')
         d['duration'] = course.Duration.replace('\n', '')
+        d['cost'] = course.Cost.replace('\n', '')
         toTeleBot.append(d)
     session.close()
     return toTeleBot
