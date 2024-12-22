@@ -38,7 +38,7 @@ def get_skills_based_on_input(user_dict):
 
         return parse_skills(text_answer)
     except Exception as e:
-        bot.reply_to(message, f"Произошла ошибка при обработке запроса: {e}")
+        print(e)
         return None
 
 

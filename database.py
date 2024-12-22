@@ -54,7 +54,7 @@ def parse_excel_to_db():
     session.close()
 
 # Функция для проверки совпадений слов в поле Skills
-def skill_match(skills_list: str) -> dict[Column[int], int]:
+def skill_match(skills_list: list) -> dict[Column[int], int]:
     '''
     Ищет кол-во совпадений требуемых навыков с навыками каждого курса
     :param skills_list: строка с требуемыми навыками, формат: "Навыки: skill1, skill2, ..."
@@ -77,7 +77,7 @@ def skill_match(skills_list: str) -> dict[Column[int], int]:
     return results
 
 # Запускаем
-def main_data(skills_list: str, n: int) ->  list[dict[str, str]]:
+def main_data(skills_list: list, n: int) ->  list[dict[str, str]]:
     '''
     Основная функция, которая запускает работу базы данных
     :param skills_list: строка с требуемыми навыками, формат: "Навыки: skill1, skill2, ..."

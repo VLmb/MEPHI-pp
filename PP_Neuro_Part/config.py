@@ -1,4 +1,3 @@
-
 TOKEN = ""
 
 with open("Skills.txt", "r", encoding="utf-8") as skills:

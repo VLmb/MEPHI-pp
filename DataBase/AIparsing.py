@@ -80,4 +80,6 @@ def write_to_excel():
     output_file_path = 'Courses.xlsx'
     df.to_excel(output_file_path, index=False)
 
-write_to_excel()
+
+if __name__ == '__main__':
+    write_to_excel()
