@@ -125,5 +125,5 @@ def formatting(id_list: list) -> list[dict[str, str]]:
 #Для теста
 slist = "Go, Programming Basics, Problem Solving, Code Writing, Go Syntax, Basic Programming Concepts, Code Reading, Problem Solving".split(', ')
 print(data(slist, 3))
-
+#пу-пу-пуууу
 
