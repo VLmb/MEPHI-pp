@@ -5,7 +5,7 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 
 #Общие данные
 dataBaseName = 'Courses'
-file_path = '../Courses.xlsx'
+file_path = 'Courses.xlsx'
 
 # Создаем базу данных SQLite и подключаемся к ней
 engine = create_engine(f'sqlite:///{dataBaseName}.db')
@@ -123,7 +123,7 @@ def formatting(id_list: list) -> list[dict[str, str]]:
     return toTeleBot
 
 #Для теста
-slist = "Go, Programming Basics, Problem Solving, Code Writing, Go Syntax, Basic Programming Concepts, Code Reading, Problem Solving".split(', ')
-print(data(slist, 3))
+slist = "Programming Basics, Go Syntax, Code Reading, Problem Solving, Algorithmic Thinking".split(', ')
+print(main_data(slist, 5))
 #пу-пу-пуууу
 
