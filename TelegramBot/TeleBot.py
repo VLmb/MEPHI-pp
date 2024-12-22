@@ -60,3 +60,4 @@ def get_feedback(message):
     else:
         bot.send_message(message.from_user.id, "Чтобы ты хотел изменить?")
 
+bot.polling(none_stop=True, interval=0)
