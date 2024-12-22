@@ -11,7 +11,7 @@ with open("data/Skills.txt", "r", encoding="utf-8") as skills:
 
 SYSTEM_PROMPT = f'''Ты ассистент, который помогает развиваться IT сотрудникам. 
 Напиши навыки, которые необходимо прокачать сотруднику на основе его входной анкеты.
-Давай ответы в следующем формате: 'Навыки:'.
+Давай ответы в следующем формате: 'Навыки:'. Пример ответа: 'Навыки: Python Syntax; Arrays; Web Development;'
 Каждую выделенный навык пиши через ; и переход на новую строку. В ответе указывай исключительно навыки.
 Вот навыки, которые ты можешь использовать в ответе, выбери только 5 навыков из списка ниже:
 {SKILLS}
@@ -42,7 +42,7 @@ def get_skills_based_on_input(user_dict):
 
 
 def create_user_prompt(user_dict):
-    prompt = f"Подскажи навыки для развития сотрудника с уровнем {user_dict['level']}, который программирует на языке {user_dict['language']}. Вот предпочтения сотрудника: {user_dict['suggestions']}"
+    prompt = f"Подскажи навыки для развития сотрудника с уровнем {user_dict['level']}, который программирует на языке {user_dict['language']}. Вот предпочтения сотрудника: {user_dict['wishes']}"
     return prompt
 
 
@@ -57,15 +57,22 @@ def get_course_recommendations(user_data: dict):
     return recommended_courses
 
 def format_course_response(courses_list):
-    response = "Вот список рекомендованных курсов для повышения вашей квалификации:\n"
+    response = "<b>Вот список рекомендованных курсов для повышения вашей квалификации:</b>\n\n"
     for course in courses_list:
-        response += f"Название: {course['name']}\nОписание: {course['description']}\nСсылка: {course['link']}\nПродолжительность: {course['duration']}\n\n"
+        response += (
+            f"<b>{course['name']}</b>\n"
+            # f"{course['description']}\n"
+            f"<a href=\"{course['link']}\">Ссылка на курс</a>\n"
+            f"Стоимость: {course['cost']}\n"
+            f"Продолжительность: {course['duration']}\n\n"
+        )
     return response
 
 if __name__ == '__main__':
     test_user_data = {'level': 'python',
                       'language': 'Middle',
-                      'suggestions': 'Хочу изучить python'
+                      'wishes': 'Хочу изучить python'
                       }
     recommended_courses = get_course_recommendations(test_user_data)
+    print(recommended_courses)
     print(format_course_response(recommended_courses))

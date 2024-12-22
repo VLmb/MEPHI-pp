@@ -5,7 +5,7 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 
 #Общие данные
 dataBaseName = 'Courses'
-file_path = 'DataBase/Courses.xlsx'
+file_path = 'data/Courses.xlsx'
 
 # Создаем базу данных SQLite и подключаемся к ней
 engine = create_engine(f'sqlite:///{dataBaseName}.db')
